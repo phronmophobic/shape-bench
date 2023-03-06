@@ -128,6 +128,17 @@
       (bench
        (dfn/sum-fast (dfn/* widths heights constants)))))
 
+;;   Evaluation count : 632340 in 60 samples of 10539 calls.
+;;              Execution time mean : 94.422887 µs
+;;     Execution time std-deviation : 991.149366 ns
+;;    Execution time lower quantile : 92.828713 µs ( 2.5%)
+;;    Execution time upper quantile : 96.321287 µs (97.5%)
+;;                    Overhead used : 1.908063 ns
+
+;; Found 1 outliers in 60 samples (1.6667 %)
+;; 	low-severe	 1 (1.6667 %)
+;;  Variance from outliers : 1.6389 % Variance is slightly inflated by outliers
+
 
   ,)
 
