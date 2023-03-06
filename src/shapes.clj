@@ -74,6 +74,16 @@
 ;;  Variance from outliers : 1.6389 % Variance is slightly inflated by outliers
 
 
+
+  ;; sorted
+  (let [sorted-switch-shapes (vec
+                              (sort-by :type switch-shapes))]
+    (bench
+     (total-area-switch sorted-switch-shapes )))
+
+  ,)
+
+
 (dt-struct/define-datatype! :shape
     [{:name :type :datatype :int64}
      {:name :width :datatype :float64}
