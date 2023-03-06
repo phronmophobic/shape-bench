@@ -1,5 +1,15 @@
 (ns shapes
-  (:require [criterium.core :as criterium :refer [bench quick-bench]]))
+  (:require [criterium.core :as criterium :refer [bench quick-bench]]
+            [tech.v3.datatype :as dtype]
+            [tech.v3.datatype.struct :as dt-struct]
+            [tech.v3.datatype.functional :as dfn]
+            [tech.v3.datatype.emap :as emap]
+            [tech.v3.datatype.unary-op :as unop]
+            [tech.v3.datatype.binary-op :as binop]))
+
+
+
+
 
 (defrecord Shape [type width height])
 
@@ -62,6 +72,51 @@
 ;; 	low-severe	 1 (1.6667 %)
 ;; 	low-mild	 4 (6.6667 %)
 ;;  Variance from outliers : 1.6389 % Variance is slightly inflated by outliers
+
+
+(dt-struct/define-datatype! :shape
+    [{:name :type :datatype :int64}
+     {:name :width :datatype :float64}
+     {:name :height :datatype :float64}])
+
+(def type->int
+  {:square 1
+   :rectangle 2
+   :triangle 3
+   :circle 4})
+(def type->constant
+  {1 1
+   2 1
+   3 0.5
+   4 Math/PI})
+
+(comment
+  (let [structs (dt-struct/new-array-of-structs :shape (count switch-shapes) )]
+    (doseq [[struct m] (map vector structs switch-shapes)]
+      (.put struct :type (type->int (get m :type)))
+      (.put struct :width (get m :width))
+      (.put struct :height (get m :height)))
+    (let [widths
+          (dt-struct/array-of-structs->column structs :width)
+
+          heights
+          (dt-struct/array-of-structs->column structs :height)
+
+          types
+          (dt-struct/array-of-structs->column structs :type)
+
+          constants (emap/emap
+                     (fn ^double [^long type]
+                       #_(case type
+                           1 1.0
+                           2 1.0
+                           3 0.5
+                           4 Math/PI)
+                       (type->constant type))
+                     :float64
+                     types)]
+      (bench
+       (dfn/sum-fast (dfn/* widths heights constants)))))
 
 
   ,)
