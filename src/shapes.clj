@@ -117,26 +117,26 @@
 
           constants (emap/emap
                      (fn ^double [^long type]
-                       #_(case type
+                       (case type
                            1 1.0
                            2 1.0
                            3 0.5
                            4 Math/PI)
-                       (type->constant type))
+                       #_(type->constant type))
                      :float64
                      types)]
       (bench
        (dfn/sum-fast (dfn/* widths heights constants)))))
 
-;;   Evaluation count : 632340 in 60 samples of 10539 calls.
-;;              Execution time mean : 94.422887 µs
-;;     Execution time std-deviation : 991.149366 ns
-;;    Execution time lower quantile : 92.828713 µs ( 2.5%)
-;;    Execution time upper quantile : 96.321287 µs (97.5%)
+;; Evaluation count : 1711500 in 60 samples of 28525 calls.
+;;              Execution time mean : 35.327887 µs
+;;     Execution time std-deviation : 272.583625 ns
+;;    Execution time lower quantile : 34.872029 µs ( 2.5%)
+;;    Execution time upper quantile : 35.800709 µs (97.5%)
 ;;                    Overhead used : 1.908063 ns
 
-;; Found 1 outliers in 60 samples (1.6667 %)
-;; 	low-severe	 1 (1.6667 %)
+;; Found 2 outliers in 60 samples (3.3333 %)
+;; 	low-severe	 2 (3.3333 %)
 ;;  Variance from outliers : 1.6389 % Variance is slightly inflated by outliers
 
 
