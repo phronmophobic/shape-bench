@@ -343,3 +343,57 @@
 
  
   ,)
+
+(def shape-array (double-array (* 3 (count switch-shapes))))
+(defn set-shape! [shapes i shape]
+  (let [offset (int (* 3 i))]
+    (aset-double shapes (+ offset 0) (type->int (:type shape)))
+    (aset-double shapes (+ offset 1) (:width shape))
+    (aset-double shapes (+ offset 2) (:height shape))))
+
+(defn area-arr ^double [^doubles shapes ^long i]
+  (let [constant
+        (case (aget shapes i)
+          1.0 1.0
+          2.0 1.0
+          3.0 0.5
+          4.0 Math/PI)
+         width (aget shapes (inc i))
+         height (aget shapes (+ i 2))]
+    (* ^double constant
+       ^double width
+       ^double height)))
+
+(defn total-area-arr [^doubles shapes]
+  (let [cnt (count shapes)]
+    (loop [n (double 0)
+           i (long 0)]
+      (if (< i cnt)
+        (recur (+ n
+                  ^double (area-arr shapes i))
+               (+ i 3))
+        n))))
+
+(comment
+
+  (doseq [[i shape] (map-indexed vector switch-shapes)]
+    (set-shape! shape-array i shape))
+
+  (bench
+   (total-area-arr shape-array))
+
+;;   Evaluation count : 3014820 in 60 samples of 50247 calls.
+;;              Execution time mean : 19.867532 µs
+;;     Execution time std-deviation : 2.617058 µs
+;;    Execution time lower quantile : 18.016424 µs ( 2.5%)
+;;    Execution time upper quantile : 24.433893 µs (97.5%)
+;;                    Overhead used : 1.963852 ns
+
+;; Found 5 outliers in 60 samples (8.3333 %)
+;; 	low-severe	 1 (1.6667 %)
+;; 	low-mild	 1 (1.6667 %)
+;; 	high-mild	 3 (5.0000 %)
+;;  Variance from outliers : 80.6657 % Variance is severely inflated by outliers
+
+
+  ,)
